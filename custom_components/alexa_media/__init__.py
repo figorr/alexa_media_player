@@ -7,10 +7,48 @@ For more details about this platform, please refer to the documentation at
 https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers-needed/58639
 """
 
+import subprocess
+import sys
+import pkg_resources
+import logging
+
+_LOGGER = logging.getLogger(__name__)
+
+def install_alexapy_from_github(alexapy_url, package_name, version):
+    try:
+        # Verificar si el paquete está instalado y su versión
+        installed_version = pkg_resources.get_distribution(package_name).version
+        if installed_version == version:
+            _LOGGER.info(f"{package_name} versión {version} ya está instalada.")
+            return
+        else:
+            _LOGGER.info(f"{package_name} versión instalada ({installed_version}) no coincide con la requerida ({version}). Actualizando...")
+    except pkg_resources.DistributionNotFound:
+        _LOGGER.info(f"{package_name} no está instalado. Instalando la versión {version} desde {alexapy_url}...")
+
+    # Descargar e instalar el archivo .whl
+    subprocess.check_call([
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        alexapy_url
+    ])
+    _LOGGER.info(f"{package_name} versión {version} instalada exitosamente.")
+
+async def async_setup(hass, config):
+    # URL del archivo .whl en GitHub y detalles del paquete
+    alexapy_url = "https://github.com/figorr/alexapy/releases/download/v1.30.1/AlexaPy-1.30.1-py3-none-any.whl"
+    package_name = "alexapy"
+    required_version = "1.30.1"
+
+    # Verificar e instalar alexapy desde GitHub
+    install_alexapy_from_github(alexapy_url, package_name, required_version)
+
 import asyncio
 from datetime import datetime, timedelta
 from json import JSONDecodeError, loads
-import logging
+#import logging
 import os
 import time
 from typing import Optional
@@ -90,7 +128,7 @@ from .helpers import (
 from .notify import async_unload_entry as notify_async_unload_entry
 from .services import AlexaMediaServices
 
-_LOGGER = logging.getLogger(__name__)
+#_LOGGER = logging.getLogger(__name__)
 
 
 ACCOUNT_CONFIG_SCHEMA = vol.Schema(
