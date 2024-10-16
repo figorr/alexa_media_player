@@ -23,6 +23,9 @@ alexapy_url = f"https://github.com/figorr/alexapy/releases/download/v{required_v
 package_name = "alexapy"
 
 def install_alexapy_from_github(alexapy_url, package_name, required_version):
+    # Log to check Python environment
+    _LOGGER.info(f"Usando el entorno Python: {sys.executable}")
+
     try:
         # Check if the package is already installed and which version
         installed_version = pkg_resources.get_distribution(package_name).version
