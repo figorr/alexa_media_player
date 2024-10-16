@@ -35,7 +35,7 @@ def install_alexapy_from_github(alexapy_url, package_name, required_version):
         _LOGGER.info(f"{package_name} is not installed. Installing version {required_version} from {alexapy_url}...")
 
     # Downloading and installing the .whl archive
-    subprocess.check_call([sys.executable, "-m", "pip", "install", alexapy_url])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", "--upgrade", alexapy_url])
     _LOGGER.info(f"{package_name} version {required_version} successfully installed.")
 
 async def async_setup(hass, config):
