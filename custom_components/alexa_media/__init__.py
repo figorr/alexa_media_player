@@ -7,48 +7,10 @@ For more details about this platform, please refer to the documentation at
 https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers-needed/58639
 """
 
-import subprocess
-import sys
-import pkg_resources
-import logging
-from packaging import version
-
-_LOGGER = logging.getLogger(__name__)
-
-# Required version
-required_version = "1.30.1"
-
-# Create the URL dinamically, based in the required version
-alexapy_url = f"https://github.com/figorr/alexapy/releases/download/v{required_version}/AlexaPy-{required_version}-py3-none-any.whl"
-package_name = "alexapy"
-
-def install_alexapy_from_github(alexapy_url, package_name, required_version):
-    # Log to check Python environment
-    _LOGGER.info(f"Usando el entorno Python: {sys.executable}")
-
-    try:
-        # Check if the package is already installed and which version
-        installed_version = pkg_resources.get_distribution(package_name).version
-        if version.parse(installed_version) >= version.parse(required_version):
-            _LOGGER.info(f"{package_name} version {installed_version} already installed.")
-            return
-        else:
-            _LOGGER.info(f"{package_name} installed version ({installed_version}) is lower than the required version ({required_version}). Updating...")
-    except pkg_resources.DistributionNotFound:
-        _LOGGER.info(f"{package_name} is not installed. Installing version {required_version} from {alexapy_url}...")
-
-    # Downloading and installing the .whl archive
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--no-cache-dir", "--upgrade", alexapy_url])
-    _LOGGER.info(f"{package_name} version {required_version} successfully installed.")
-
-async def async_setup(hass, config):
-    # Check and install alexapy from GitHub
-    install_alexapy_from_github(alexapy_url, package_name, required_version)
-
 import asyncio
 from datetime import datetime, timedelta
 from json import JSONDecodeError, loads
-#import logging
+import logging
 import os
 import time
 from typing import Optional
@@ -128,7 +90,7 @@ from .helpers import (
 from .notify import async_unload_entry as notify_async_unload_entry
 from .services import AlexaMediaServices
 
-#_LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 
 ACCOUNT_CONFIG_SCHEMA = vol.Schema(
