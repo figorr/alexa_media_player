@@ -15,31 +15,32 @@ from packaging import version
 
 _LOGGER = logging.getLogger(__name__)
 
-def install_alexapy_from_github(alexapy_url, package_name, required_version):
-    try:
-        # Verificar si el paquete está instalado y su versión
-        installed_version = pkg_resources.get_distribution(package_name).version
-        if version.parse(installed_version) >= version.parse(required_version):
-            _LOGGER.info(f"{package_name} versión {installed_version} ya está instalada.")
-            return
-        else:
-            _LOGGER.info(f"{package_name} versión instalada ({installed_version}) es inferior a la requerida ({required_version}). Actualizando...")
-    except pkg_resources.DistributionNotFound:
-        _LOGGER.info(f"{package_name} no está instalado. Instalando la versión {required_version} desde {alexapy_url}...")
-
-    # Descargar e instalar el archivo .whl
-    try:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", alexapy_url])
-        _LOGGER.info(f"{package_name} versión {required_version} instalada exitosamente.")
-    except subprocess.CalledProcessError as e:
-        _LOGGER.error(f"Error al instalar {package_name} desde {alexapy_url}: {e}")
-
-# Verificar e instalar alexapy desde GitHub ANTES de las importaciones
-alexapy_url = "https://github.com/figorr/alexapy/releases/download/v1.30.1/AlexaPy-1.30.1-py3-none-any.whl"
-package_name = "alexapy"
+# Required version
 required_version = "1.30.1"
 
-install_alexapy_from_github(alexapy_url, package_name, required_version)
+# Create the URL dinamically, based in the required version
+alexapy_url = f"https://github.com/figorr/alexapy/releases/download/v{required_version}/AlexaPy-{required_version}-py3-none-any.whl"
+package_name = "alexapy"
+
+def install_alexapy_from_github(alexapy_url, package_name, required_version):
+    try:
+        # Check if the package is already installed and which version
+        installed_version = pkg_resources.get_distribution(package_name).version
+        if version.parse(installed_version) >= version.parse(required_version):
+            _LOGGER.info(f"{package_name} version {installed_version} already installed.")
+            return
+        else:
+            _LOGGER.info(f"{package_name} installed version ({installed_version}) is lower than the required version ({required_version}). Updating...")
+    except pkg_resources.DistributionNotFound:
+        _LOGGER.info(f"{package_name} is not installed. Installing version {required_version} from {alexapy_url}...")
+
+    # Downloading and installing the .whl archive
+    subprocess.check_call([sys.executable, "-m", "pip", "install", alexapy_url])
+    _LOGGER.info(f"{package_name} version {required_version} successfully installed.")
+
+async def async_setup(hass, config):
+    # Check and install alexapy from GitHub
+    install_alexapy_from_github(alexapy_url, package_name, required_version)
 
 import asyncio
 from datetime import datetime, timedelta
