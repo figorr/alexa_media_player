@@ -14,7 +14,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
 # alexapy = "1.30.1" # Descomentar si se quiere volver a usar PyPI
-alexapy = { git = "https://github.com/figorr/alexapy.git", tag = "v1.30.1" }  # Dependencia desde tu repositorio
+alexapy = { git = "https://github.com/figorr/alexapy.git", tag = "v1.30.1" }  # Dependencia instalada desde tu repositorio
 aiohttp = ">=3.8.1"
 packaging = ">=20.3"
 wrapt = ">=1.12.1"
