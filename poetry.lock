@@ -265,7 +265,7 @@ tzdata = ">=2024.1"
 
 [[package]]
 name = "alexapy"
-version = "1.30.3"
+version = "1.30.5"
 description = "Python API to control Amazon Echo Devices Programmatically."
 optional = false
 python-versions = ">=3.11, <4"
@@ -289,8 +289,8 @@ yarl = "*"
 [package.source]
 type = "git"
 url = "https://github.com/figorr/alexapy.git"
-reference = "v1.30.3"
-resolved_reference = "f141703f35dd1b46181dd6c70ebc5371cd83621f"
+reference = "v1.30.5"
+resolved_reference = "a50043f9bb4dbe1893a6c53b60794ae9ceaf714c"
 
 [[package]]
 name = "anyio"
@@ -4930,4 +4930,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.14"
-content-hash = "9e61d7a311a933a4c464d2196dba8c6444710efe2beae39a3e2c2f2ebd94c99b"
+content-hash = "455ff73bbb28ff25ef34668dca116f432b0960c6db503ba3dde0a5845e7d6187"
