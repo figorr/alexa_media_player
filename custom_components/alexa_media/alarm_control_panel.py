@@ -14,10 +14,9 @@ from typing import List, Optional
 from alexapy import hide_email, hide_serial
 from homeassistant.const import (
     CONF_EMAIL,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_DISARMED,
     STATE_UNAVAILABLE,
 )
+from homeassistant.components.alarm_control_panel import AlarmControlPanelState
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -169,10 +168,10 @@ class AlexaAlarmControlPanel(AlarmControlPanel, AlexaMedia, CoordinatorEntity):
                 return
         except AttributeError:
             pass
-        if command not in (STATE_ALARM_ARMED_AWAY, STATE_ALARM_DISARMED):
+        if command not in (AlarmControlPanelState.ARMED_AWAY, AlarmControlPanelState.DISARMED):
             _LOGGER.error("Invalid command: %s", command)
             return
-        command_map = {STATE_ALARM_ARMED_AWAY: "AWAY", STATE_ALARM_DISARMED: "HOME"}
+        command_map = {AlarmControlPanelState.ARMED_AWAY: "AWAY", AlarmControlPanelState.DISARMED: "HOME"}
         available_media_players = list(
             filter(lambda x: x.state != STATE_UNAVAILABLE, self._media_players.values())
         )
@@ -198,13 +197,13 @@ class AlexaAlarmControlPanel(AlarmControlPanel, AlexaMedia, CoordinatorEntity):
         self, code=None  # pylint:disable=unused-argument
     ) -> None:
         """Send disarm command."""
-        await self._async_alarm_set(STATE_ALARM_DISARMED)
+        await self._async_alarm_set(AlarmControlPanelState.DISARMED)
 
     async def async_alarm_arm_away(
         self, code=None  # pylint:disable=unused-argument
     ) -> None:
         """Send arm away command."""
-        await self._async_alarm_set(STATE_ALARM_ARMED_AWAY)
+        await self._async_alarm_set(AlarmControlPanelState.ARMED_AWAY)
 
     @property
     def unique_id(self):
@@ -223,10 +222,10 @@ class AlexaAlarmControlPanel(AlarmControlPanel, AlexaMedia, CoordinatorEntity):
             self.coordinator, self._guard_entity_id
         )
         if _state == "ARMED_AWAY":
-            return STATE_ALARM_ARMED_AWAY
+            return AlarmControlPanelState.ARMED_AWAY
         if _state == "ARMED_STAY":
-            return STATE_ALARM_DISARMED
-        return STATE_ALARM_DISARMED
+            return AlarmControlPanelState.DISARMED
+        return AlarmControlPanelState.DISARMED
 
     @property
     def supported_features(self) -> int:
